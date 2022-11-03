@@ -32,10 +32,10 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
       
-      - run: npm ci
+      - run: yarn install --frozen-lockfile
         name: Restore packages
         
-      - run: npm run build
+      - run: yarn build
         name: Build frontend assets
       
       - name: Build and push Docker image
