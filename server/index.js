@@ -21,6 +21,7 @@ app.post("/apply", (req, res) => {
 
 app.post("/cancel", (req, res) => {
 	worker.postMessage({ type: "cancel" });
+	res.sendStatus(200);
 });
 
 app.get("/health", (req, res) => {

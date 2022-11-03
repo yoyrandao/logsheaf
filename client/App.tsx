@@ -1,7 +1,8 @@
 import { Button, Grid, Slider, Stack, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocalStorage } from "./hooks/useLocalStorage";
 
 type ButtonColor =
 	| "inherit"
@@ -14,28 +15,29 @@ type ButtonColor =
 	| undefined;
 
 export const App = () => {
-	const [logInterval, setLogInterval] = useState<number>(100);
+	const [logInterval, setLogInterval] = useLocalStorage<number>('logInterval', 100);
 	const onLogIntervalChange = (_: Event, newValue: number | number[]) => {
+		setApplied(false);
 		setLogInterval(newValue as number);
 	};
 
-	const [loggerCount, setLoggerCount] = useState<number>(1);
+	const [loggerCount, setLoggerCount] = useLocalStorage<number>('loggerCount', 1);
 	const onLogCountChange = (_: Event, newValue: number | number[]) => {
+		setApplied(false);
 		setLoggerCount(newValue as number);
 	};
 
-	const [applyButtonColor, setApplyButtonColor] =
-		useState<ButtonColor>(undefined);
+	const [applied, setApplied] = useLocalStorage<boolean>('settingsApplied', false);
+	const [applyButtonColor, setApplyButtonColor] = useState<ButtonColor>(undefined);
+
+	useEffect(() => {
+		setApplyButtonColor(applied ? 'success' : 'warning');
+	}, [applied])
 
 	const onApply = () => {
 		axios
 			.post("/apply", { logInterval, loggerCount })
-			.then(() => {
-				setApplyButtonColor("success");
-				setTimeout(() => {
-					setApplyButtonColor(undefined);
-				}, 1500);
-			})
+			.then(() => setApplied(true))
 			.catch((e) => console.log(e));
 	};
 
