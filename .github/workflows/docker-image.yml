@@ -22,11 +22,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
         
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+        
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4.1.1
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      
+      - run: npm run build
+        name: Build fronend assets
       
       - name: Build and push Docker image
         uses: docker/build-push-action@v3.2.0
