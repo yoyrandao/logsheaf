@@ -32,8 +32,11 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
       
+      - run: npm ci
+        name: Restore packages
+        
       - run: npm run build
-        name: Build fronend assets
+        name: Build frontend assets
       
       - name: Build and push Docker image
         uses: docker/build-push-action@v3.2.0
